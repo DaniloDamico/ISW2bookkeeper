@@ -79,10 +79,10 @@
       <artifactId>netty-handler</artifactId>
     </dependency>
     <dependency>
-        <groupId>io.netty</groupId>
-        <artifactId>netty-transport-native-epoll</artifactId>
-        <classifier>linux-x86_64</classifier>
-      </dependency>
+      <groupId>io.netty</groupId>
+      <artifactId>netty-transport-native-epoll</artifactId>
+      <classifier>linux-x86_64</classifier>
+    </dependency>
     <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-tcnative-boringssl-static</artifactId>
@@ -170,40 +170,33 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-        <groupId>org.apache.kerby</groupId>
-        <artifactId>kerby-config</artifactId>
-        <version>${kerby.version}</version>
-        <scope>test</scope>
-        <exclusions>
-            <exclusion>
-                <groupId>org.slf4j</groupId>
-                <artifactId>*</artifactId>
-            </exclusion>
-        </exclusions>
+      <groupId>org.apache.kerby</groupId>
+      <artifactId>kerby-config</artifactId>
+      <version>${kerby.version}</version>
+      <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>org.slf4j</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
-        <groupId>org.apache.kerby</groupId>
-        <artifactId>kerb-simplekdc</artifactId>
-        <version>${kerby.version}</version>
-        <scope>test</scope>
-        <exclusions>
-            <exclusion>
-                <groupId>org.slf4j</groupId>
-                <artifactId>*</artifactId>
-            </exclusion>
-        </exclusions>
+      <groupId>org.apache.kerby</groupId>
+      <artifactId>kerb-simplekdc</artifactId>
+      <version>${kerby.version}</version>
+      <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>org.slf4j</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.apache.zookeeper</groupId>
       <artifactId>zookeeper</artifactId>
       <type>test-jar</type>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.junit.jupiter</groupId>
-      <artifactId>junit-jupiter-api</artifactId>
-      <version>5.9.3</version>
       <scope>test</scope>
     </dependency>
 
@@ -272,7 +265,7 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
         <version>${maven-surefire-plugin.version}</version>
-        <configuration>
+        <!-- configuration>
           <trimStackTrace>false</trimStackTrace>
           <properties>
             <property>
@@ -280,7 +273,7 @@
               <value>org.apache.bookkeeper.common.testing.util.TimedOutTestsListener</value>
             </property>
           </properties>
-        </configuration>
+        </configuration -->
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -307,7 +300,6 @@
           </execution>
         </executions>
       </plugin>
-
     </plugins>
   </build>
   <profiles>
@@ -372,14 +364,18 @@
       <activation>
         <activeByDefault>false</activeByDefault>
       </activation>
+      <properties>
+        <withHistory>true</withHistory>
+        <pitest.version>1.14.0</pitest.version>
+        <pitest.history.file>${project.build.directory}/pitest.history</pitest.history.file>
+      </properties>
       <build>
         <plugins>
           <plugin>
             <groupId>org.pitest</groupId>
             <artifactId>pitest-maven</artifactId>
-            <version>1.14.1</version>
+            <version>${pitest.version}</version>
             <configuration>
-              <verbose>true</verbose>
               <targetClasses>
                 <param>org.apache.bookkeeper.util.IteratorUtility</param>
               </targetClasses>
@@ -387,6 +383,11 @@
                 <param>iteratorUtility.MergeIteratorsForPrimitiveLongIteratorTest</param>
                 <param>iteratorUtility.MergePrimitiveLongIteratorTest</param>
               </targetTests>
+              <avoidCallsTo>
+                <avoidCallsTo>org.slf4j</avoidCallsTo>
+              </avoidCallsTo>
+              <historyInputFile>${pitest.history.file}</historyInputFile>
+              <historyOutputFile>${pitest.history.file}</historyOutputFile>
             </configuration>
             <executions>
               <execution>
@@ -409,12 +410,9 @@
         <activeByDefault>false</activeByDefault>
       </activation>
       <properties>
-        <ba-dua.version>0.8.1-SNAPSHOT</ba-dua.version>
-        <maven.compiler.source>${java.specification.version}</maven.compiler.source>
-        <maven.compiler.target>${java.specification.version}</maven.compiler.target>
+        <ba-dua.version>0.6.0</ba-dua.version>
         <argLine>-javaagent:target/dependency/ba-dua-agent-rt-${ba-dua.version}-all.jar -Doutput.file=${project.build.directory}/badua.ser</argLine>
       </properties>
-
       <dependencies>
         <dependency>
           <groupId>br.usp.each.saeg</groupId>
@@ -422,7 +420,6 @@
           <version>${ba-dua.version}</version>
         </dependency>
       </dependencies>
-
       <build>
         <plugins>
           <plugin>
@@ -447,7 +444,6 @@
               </execution>
             </executions>
           </plugin>
-
           <plugin>
             <groupId>org.codehaus.mojo</groupId>
             <artifactId>exec-maven-plugin</artifactId>
