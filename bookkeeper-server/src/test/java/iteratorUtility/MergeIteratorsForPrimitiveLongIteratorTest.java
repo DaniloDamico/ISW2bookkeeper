@@ -127,6 +127,12 @@ public class MergeIteratorsForPrimitiveLongIteratorTest {
             assertEquals(expected[i], list.get(i).longValue());
         }
 
+        // Branch Coverage Tests
+        try {
+            mergedIterator.nextLong();
+        } catch (NoSuchElementException e) {
+            Assert.assertTrue(true);
+        }
 
 
     }

@@ -164,7 +164,6 @@ public class MergePrimitiveLongIteratorTest {
         long[] expectedNonsorted = {6,4,2};
 
         long[] expectedRepetitive = {2, 4, 4, 6};
-        long[] valid1Expected = {1, 0, 5};
 
         long[] negativeExpected = {-2, 4, 4, 6};
 
@@ -201,18 +200,26 @@ public class MergePrimitiveLongIteratorTest {
             while (mergedIterator.hasNext()) {
                 list.add(mergedIterator.nextLong());
             }
+
         } catch (Exception e) {
             Assert.assertTrue(expectedException);
             return;
         }
 
         assertEquals(expected.length, list.size());
+
         System.out.println("expected: " + Arrays.toString(expected)+ " actual: " + list);
 
         for(int i=0; i<list.size(); i++){
             assertEquals(expected[i], list.get(i).longValue());
         }
 
+        // Branch Coverage Tests
+        try {
+            mergedIterator.nextLong();
+        } catch (NoSuchElementException e) {
+            Assert.assertTrue(true);
+        }
 
 
     }

@@ -135,7 +135,7 @@ public class AddEntryTest {
         assert(!exception);
     }
 
-    private static ByteBuf createByteBuf(long ledger, long entry){
+    protected static ByteBuf createByteBuf(long ledger, long entry){
         byte[] data = ("ledger: " + ledger + "entry: " + entry).getBytes();
         ByteBuf validByteBuf = Unpooled.buffer(8 + 8 + data.length);
         validByteBuf.writeLong(ledger);

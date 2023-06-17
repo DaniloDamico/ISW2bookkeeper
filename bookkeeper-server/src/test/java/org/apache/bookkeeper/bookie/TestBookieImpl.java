@@ -34,6 +34,10 @@ import org.apache.bookkeeper.util.DiskChecker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 /**
  * Test wrapper for BookieImpl that chooses defaults for dependencies.
  */
@@ -44,6 +48,10 @@ public class TestBookieImpl extends BookieImpl {
 
     public TestBookieImpl(ServerConfiguration conf) throws Exception {
         this(new ResourceBuilder(conf).build());
+    }
+
+    public TestBookieImpl(ServerConfiguration conf, boolean mockedStorage) throws Exception {
+        this(new ResourceBuilder(conf).buildWithFencedStorage());
     }
 
     public TestBookieImpl(Resources resources, StatsLogger statsLogger) throws Exception {
@@ -208,6 +216,44 @@ public class TestBookieImpl extends BookieImpl {
                                  diskChecker,
                                  ledgerDirsManager,
                                  indexDirsManager);
+        }
+
+        public Resources buildWithFencedStorage() throws Exception {
+
+            StatsLogger statsLogger = NullStatsLogger.INSTANCE;
+
+            if (metadataBookieDriver == null) {
+                if (conf.getMetadataServiceUri() == null) {
+                    metadataBookieDriver = new NullMetadataBookieDriver();
+                } else {
+                    metadataBookieDriver = BookieResources.createMetadataDriver(conf, statsLogger);
+                }
+            }
+            if (registrationManager == null) {
+                registrationManager = metadataBookieDriver.createRegistrationManager();
+            }
+            LedgerManagerFactory ledgerManagerFactory = metadataBookieDriver.getLedgerManagerFactory();
+            LedgerManager ledgerManager = ledgerManagerFactory.newLedgerManager();
+
+            DiskChecker diskChecker = BookieResources.createDiskChecker(conf);
+            LedgerDirsManager ledgerDirsManager = BookieResources.createLedgerDirsManager(
+                    conf, diskChecker, statsLogger);
+            LedgerDirsManager indexDirsManager = BookieResources.createIndexDirsManager(
+                    conf, diskChecker, statsLogger, ledgerDirsManager);
+
+            //mock
+            LedgerStorage storage = mock(LedgerStorage.class);
+            when(storage.isFenced(any(long.class))).thenReturn(true);
+
+            return new Resources(conf,
+                    metadataBookieDriver,
+                    registrationManager,
+                    ledgerManagerFactory,
+                    ledgerManager,
+                    storage,
+                    diskChecker,
+                    ledgerDirsManager,
+                    indexDirsManager);
         }
     }
 }
