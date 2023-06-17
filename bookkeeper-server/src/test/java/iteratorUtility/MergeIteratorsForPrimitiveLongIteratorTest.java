@@ -30,12 +30,14 @@ public class MergeIteratorsForPrimitiveLongIteratorTest {
         List<Integer> nonSortedList = Arrays.asList(6, 4, 2, 8, 10);
         List<Integer> repetitiveList = Arrays.asList(2, 4, 4, 8, 10);
         List<Integer> emptyList = Collections.emptyList();
+        List<Integer> negativeList = Arrays.asList(-1, 3, 5, 7, 9);
 
         Iterator<Integer> valid1 = validList1.iterator();
         Iterator<Integer> valid2 = validList2.iterator();
         Iterator<Integer> nonsorted = nonSortedList.iterator();
         Iterator<Integer> repetitive = repetitiveList.iterator();
         Iterator<Integer> empty = emptyList.iterator();
+        Iterator<Integer> negative = negativeList.iterator();
 
         long[] expected = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
         long[] expectedEmpty = {};
@@ -61,6 +63,7 @@ public class MergeIteratorsForPrimitiveLongIteratorTest {
 
         long[] expectedNonsorted = {6, 4, 2, 8, 10};
         long[] expectedRepetitive = {2, 4, 4, 8, 10};
+        long[] expectedNegative = {-1, 3, 5, 7, 9};
 
         Comparator<Integer> validComparator = Comparator.naturalOrder();
         Comparator<Integer> invalidComparator = (a, b) -> {
@@ -81,6 +84,7 @@ public class MergeIteratorsForPrimitiveLongIteratorTest {
                 {expected,          valid1,         stringIterator, validComparator,    validFunction,  true}, // iterator of different type
                 {expectedNonsorted, valid1,         nonsorted,      validComparator,    validFunction,  false}, // non sorted iterator
                 {expectedRepetitive,valid1,         repetitive,     validComparator,    validFunction,  false}, // repetitive iterator
+                {expectedNegative,  valid1,         negative,       validComparator,    validFunction,  false}, // negative iterator
 
                 {expectedEmpty,     valid1,         valid2,         invalidComparator,  validFunction,  true}, // invalid comparator
                 {expectedEmpty,     valid1,         valid2,         null,               validFunction,  true}, // null comparator
