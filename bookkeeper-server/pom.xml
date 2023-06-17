@@ -365,7 +365,7 @@
         <activeByDefault>false</activeByDefault>
       </activation>
       <properties>
-        <withHistory>true</withHistory>
+        <withHistory>false</withHistory>
         <pitest.version>1.14.0</pitest.version>
         <pitest.history.file>${project.build.directory}/pitest.history</pitest.history.file>
       </properties>
@@ -377,11 +377,11 @@
             <version>${pitest.version}</version>
             <configuration>
               <targetClasses>
-                <param>org.apache.bookkeeper.util.IteratorUtility</param>
+                <param>org.apache.bookkeeper.bookie.BookieImpl</param>
               </targetClasses>
               <targetTests>
-                <param>iteratorUtility.MergeIteratorsForPrimitiveLongIteratorTest</param>
-                <param>iteratorUtility.MergePrimitiveLongIteratorTest</param>
+                <param>org.apache.bookkeeper.bookie.AddEntryTest</param>
+                <param>org.apache.bookkeeper.bookie.AddEntryToFencedLedgerTest</param>
               </targetTests>
               <avoidCallsTo>
                 <avoidCallsTo>org.slf4j</avoidCallsTo>
